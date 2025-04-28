@@ -3,6 +3,10 @@ name: Build DLL on Windows and Create Release
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [created]
   workflow_dispatch:
 
 jobs:
@@ -28,7 +32,8 @@ jobs:
         copy build\Release\qrcodegen.dll artifacts\
         powershell Compress-Archive -Path artifacts\* -DestinationPath qrcodegen_dll.zip
 
-    - name: Upload Release Asset
+    - name: Upload Release Artifact
+      if: github.event_name == 'release'
       uses: softprops/action-gh-release@v2
       with:
         files: qrcodegen_dll.zip
